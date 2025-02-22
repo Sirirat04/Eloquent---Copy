@@ -20,8 +20,13 @@ const BillHistories = () => {
             });
     }, []);
 
-    if (loading) return <h2 style={{ textAlign: 'center' }}>กำลังโหลดข้อมูลประวัติการสั่งซื้อ...</h2>;
-    if (error) return <h2 style={{ textAlign: 'center', color: 'red' }}>{error}</h2>;
+    // ตรวจสอบให้แน่ใจว่า return อยู่ในฟังก์ชัน
+    if (loading) {
+        return <h2 style={{ textAlign: 'center' }}>กำลังโหลดข้อมูลประวัติการสั่งซื้อ...</h2>;
+    }
+    if (error) {
+        return <h2 style={{ textAlign: 'center', color: 'red' }}>{error}</h2>;
+    }
 
     const containerStyle = {
         padding: '20px',
@@ -45,7 +50,7 @@ const BillHistories = () => {
             <div style={containerStyle}>
                 <ul style={billListStyle}>
                     {billHistories.map((bill) => (
-                        <li key={bill.table_number} style={billItemStyle}>
+                        <li key={`${bill.table_number}-${bill.id}`} style={billItemStyle}>
                             <strong>โต๊ะ: {bill.table_number}</strong>
                             <br />
                             <span>รวม: ${bill.total}</span>

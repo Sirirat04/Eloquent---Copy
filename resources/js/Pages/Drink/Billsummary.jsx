@@ -10,7 +10,9 @@ const BillSummary = () => {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const [selectedBill, setSelectedBill] = useState(null);
 
-    useEffect(() => {
+    // โหลดข้อมูลบิลสรุปจาก API
+    const fetchBillSummary = () => {
+        setLoading(true);
         axios.get('/api/bills/summary')
             .then((response) => {
                 setBillSummary(response.data);
@@ -21,6 +23,10 @@ const BillSummary = () => {
             .finally(() => {
                 setLoading(false);
             });
+    };
+
+    useEffect(() => {
+        fetchBillSummary(); // เรียก API ตอนโหลดหน้า
     }, []);
 
     const toggleMenu = () => {
@@ -45,9 +51,13 @@ const BillSummary = () => {
 
         if (window.confirm(`คุณต้องการชำระเงินสำหรับโต๊ะ ${selectedBill.table_number} หรือไม่?`)) {
             axios.post('/api/bills/pay', { table_number: selectedBill.table_number })
-                .then((response) => {
+                .then(() => {
                     alert(`ชำระเงินสำหรับโต๊ะ ${selectedBill.table_number} เรียบร้อย!`);
-                    setBillSummary(billSummary.filter(bill => bill.table_number !== selectedBill.table_number));
+
+                    // 🔥 โหลดข้อมูลใหม่จาก API หลังจากชำระเงิน
+                    fetchBillSummary();
+
+                    // ล้างค่าบิลที่ถูกเลือก
                     setSelectedBill(null);
                 })
                 .catch((err) => {
@@ -78,18 +88,18 @@ const BillSummary = () => {
     };
 
     const gearButtonStyle = {
-        position: 'fixed', // เปลี่ยนเป็น fixed เพื่อให้อยู่นิ่งที่มุมขวาบนของหน้าจอ
+        position: 'fixed',
         top: '20px',
         right: '20px',
         background: 'none',
         border: 'none',
         fontSize: '24px',
         cursor: 'pointer',
-        zIndex: 1001, // ให้อยู่เหนือ Modal
+        zIndex: 1001,
     };
 
     const dropdownStyle = {
-        position: 'fixed', // เปลี่ยนเป็น fixed เพื่อให้เมนูสัมพันธ์กับปุ่ม
+        position: 'fixed',
         top: '50px',
         right: '20px',
         backgroundColor: '#fff',
@@ -97,7 +107,7 @@ const BillSummary = () => {
         borderRadius: '4px',
         boxShadow: '0 2px 5px rgba(0,0,0,0.2)',
         display: isMenuOpen ? 'block' : 'none',
-        zIndex: 1001, // ให้อยู่เหนือ Modal
+        zIndex: 1001,
     };
 
     const dropdownItemStyle = {
@@ -154,7 +164,6 @@ const BillSummary = () => {
 
     return (
         <AuthenticatedLayout>
-            {/* ปุ่มฟันเฟืองและเมนูดรอปดาวน์อยู่นอก container */}
             <button style={gearButtonStyle} onClick={toggleMenu}>
                 ⚙️
             </button>
@@ -164,7 +173,6 @@ const BillSummary = () => {
                 </div>
             </div>
 
-            {/* ส่วนรายการบิล */}
             <div style={containerStyle}>
                 <ul style={billListStyle}>
                     {billSummary.map((bill) => (
@@ -188,7 +196,6 @@ const BillSummary = () => {
                 </ul>
             </div>
 
-            {/* Modal สำหรับแสดงบิลที่เลือก */}
             {selectedBill && (
                 <>
                     <div style={overlayStyle} onClick={closeModal}></div>

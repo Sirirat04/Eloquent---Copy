@@ -49,7 +49,6 @@ class BillController extends Controller
             ]);
 
             foreach ($bill->items as $item) {
-                // Avoid creating duplicate BillItem entries
                 BillItem::updateOrCreate(
                     ['bill_id' => $billSummary->id, 'product_id' => $item->product_id],
                     ['quantity' => $item->quantity, 'price' => $item->price]
@@ -66,18 +65,18 @@ class BillController extends Controller
     public function pay(Request $request)
     {
         try {
-            $bill = Bill::where('table_number', $request->table_number)->firstOrFail();
-            $bill->status = 'paid';
-            $bill->save();
-
-            // Store the completed bill data in the BillHistory
+            // ค้นหา Bill และ BillSummary
+            $billSummary = BillSummary::where('table_number', $request->table_number)->firstOrFail();
+            $bill = Bill::where('table_number', $request->table_number)->first();
+    
+            // สร้างประวัติการชำระเงิน
             $billHistory = BillHistory::create([
-                'table_number' => $bill->table_number,
-                'total' => $bill->total,
+                'table_number' => $billSummary->table_number,
+                'total' => $billSummary->total,
             ]);
-
-            foreach ($bill->items as $item) {
-                // Create new BillItem entries for the BillHistory
+    
+            // ย้ายข้อมูลสินค้าจาก BillSummary ไป BillHistory
+            foreach ($billSummary->items as $item) {
                 BillItem::create([
                     'bill_id' => $billHistory->id,
                     'product_id' => $item->product_id,
@@ -85,11 +84,22 @@ class BillController extends Controller
                     'price' => $item->price,
                 ]);
             }
-
-            return response()->json($billHistory->load('items.product'), 200);
+    
+            // 🔥 อัปเดตสถานะ Bill เป็น 'paid'
+            if ($bill) {
+                $bill->status = 'paid';
+                $bill->save();
+            }
+    
+            // 🔥 ลบ BillSummary ออกจากฐานข้อมูล
+            $billSummary->items()->delete();
+            $billSummary->delete();
+    
+            return response()->json(['message' => 'Payment completed successfully'], 200);
         } catch (\Exception $e) {
             Log::error('Failed to process payment: ' . $e->getMessage());
             return response()->json(['error' => 'Failed to process payment'], 500);
         }
     }
+    
 }

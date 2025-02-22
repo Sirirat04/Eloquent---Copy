@@ -66,4 +66,7 @@ Route::get('/api/billhistories', [BillHistoryController::class, 'index']);
 // Add the new route for handling bill payment
 Route::post('/api/bills/pay', [BillController::class, 'pay']);
 
+// Add the new route for handling bill completion
+Route::patch('/api/bills/{bill}/complete', [BillController::class, 'complete']);
+
 require __DIR__.'/auth.php';

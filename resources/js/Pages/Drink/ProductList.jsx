@@ -36,10 +36,11 @@ const ProductList = () => {
     };
 
     const updateQuantity = (productId, newQuantity) => {
+        if (newQuantity <= 0) {
+            alert('จำนวนสินค้าต้องมากกว่าศูนย์');
+            return;
+        }
         setBillItems((prevItems) => {
-            if (newQuantity <= 0) {
-                return prevItems.filter(item => item.id !== productId);
-            }
             return prevItems.map(item =>
                 item.id === productId ? { ...item, quantity: newQuantity } : item
             );
@@ -78,7 +79,7 @@ const ProductList = () => {
     const calculateTotal = () => {
         return billItems
             .reduce((total, item) => total + (Number(item.price) || 0) * item.quantity, 0)
-            .toFixed(2);
+            .toFixed(2); // คำนวณรวมและตั้งค่าเป็นทศนิยม 2 ตำแหน่ง
     };
 
     if (loading) return <h2 style={{ textAlign: 'center' }}>กำลังโหลดสินค้า...</h2>;
@@ -116,8 +117,8 @@ const ProductList = () => {
     };
 
     const billStyle = {
-        position: 'sticky',   // ทำให้บิลคงที่ในตำแหน่งเดิม
-        top: '0',             // ติดอยู่ด้านบนสุดของ container
+        position: 'sticky',
+        top: '0',
         border: '1px solid #ddd',
         borderRadius: '8px',
         padding: '20px',
@@ -126,7 +127,6 @@ const ProductList = () => {
         flexDirection: 'column',
         height: '80vh',
     };
-    
 
     const billItemStyle = {
         display: 'flex',
@@ -205,7 +205,7 @@ const ProductList = () => {
                     <ul style={productGridStyle}>
                         {products.map((product) => (
                             <li
-                                key={product.id}
+                                key={`${product.id}-${product.quantity}`} // ปรับ key เป็นเอกลักษณ์
                                 style={itemStyle}
                                 onClick={() => addToBill(product)}
                             >
@@ -248,7 +248,7 @@ const ProductList = () => {
                         ) : (
                             <ul style={billListStyle}>
                                 {billItems.map((item) => (
-                                    <li key={item.id} style={billItemStyle}>
+                                    <li key={`${item.id}-${item.quantity}`} style={billItemStyle}>
                                         <span>{item.name}</span>
                                         <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
                                             <div style={quantityControlStyle}>

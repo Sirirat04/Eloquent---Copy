@@ -9,7 +9,7 @@ class BillHistoryController extends Controller
 {
     public function index()
     {
-        $billHistories = BillHistory::with('items.product')->get();
+        $billHistories = BillHistory::with('items.product')->orderBy('created_at', 'desc')->get();
         return response()->json($billHistories);
     }
 }
