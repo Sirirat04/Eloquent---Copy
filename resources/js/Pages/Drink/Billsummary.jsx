@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import { Inertia } from '@inertiajs/inertia';
 import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
 
 const BillSummary = () => {
@@ -27,7 +28,7 @@ const BillSummary = () => {
     };
 
     const handleHistoryClick = () => {
-        alert('ไปยังหน้าประวัติการสั่งซื้อ (ต้องเพิ่มเส้นทางใน router)');
+        Inertia.get(route('billhistory'));
         setIsMenuOpen(false);
     };
 
@@ -42,15 +43,17 @@ const BillSummary = () => {
     const handlePayment = () => {
         if (!selectedBill) return;
 
-        axios.post('/api/bills/pay', { table_number: selectedBill.table_number })
-            .then((response) => {
-                alert(`ชำระเงินสำหรับโต๊ะ ${selectedBill.table_number} เรียบร้อย!`);
-                setBillSummary(billSummary.filter(bill => bill.table_number !== selectedBill.table_number));
-                setSelectedBill(null);
-            })
-            .catch((err) => {
-                alert('เกิดข้อผิดพลาดในการชำระเงิน: ' + (err.message || 'Unknown error'));
-            });
+        if (window.confirm(`คุณต้องการชำระเงินสำหรับโต๊ะ ${selectedBill.table_number} หรือไม่?`)) {
+            axios.post('/api/bills/pay', { table_number: selectedBill.table_number })
+                .then((response) => {
+                    alert(`ชำระเงินสำหรับโต๊ะ ${selectedBill.table_number} เรียบร้อย!`);
+                    setBillSummary(billSummary.filter(bill => bill.table_number !== selectedBill.table_number));
+                    setSelectedBill(null);
+                })
+                .catch((err) => {
+                    alert('เกิดข้อผิดพลาดในการชำระเงิน: ' + (err.message || 'Unknown error'));
+                });
+        }
     };
 
     if (loading) return <h2 style={{ textAlign: 'center' }}>กำลังโหลดข้อมูลสรุปบิล...</h2>;

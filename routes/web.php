@@ -4,6 +4,8 @@ use App\Http\Controllers\ProfileController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
+use App\Http\Controllers\BillHistoryController;
+use App\Http\Controllers\BillController;
 
 Route::get('/', function () {
     return Inertia::render('Welcome', [
@@ -52,5 +54,16 @@ Route::get('/orders', function () {
 Route::get('/billsummary', function () {
     return Inertia::render('Drink/Billsummary');
 })->name('billsummary');
+
+// Add the new route to render the BillHistory page
+Route::get('/billhistory', function () {
+    return Inertia::render('Drink/Billhistories');
+})->name('billhistory');
+
+// Add the new route for BillHistoryController
+Route::get('/api/billhistories', [BillHistoryController::class, 'index']);
+
+// Add the new route for handling bill payment
+Route::post('/api/bills/pay', [BillController::class, 'pay']);
 
 require __DIR__.'/auth.php';
