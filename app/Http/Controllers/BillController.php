@@ -65,17 +65,14 @@ class BillController extends Controller
     public function pay(Request $request)
     {
         try {
-            // ค้นหา Bill และ BillSummary
             $billSummary = BillSummary::where('table_number', $request->table_number)->firstOrFail();
-            $bill = Bill::where('table_number', $request->table_number)->first();
-    
-            // สร้างประวัติการชำระเงิน
+
+            // Store the completed bill data in the BillHistory
             $billHistory = BillHistory::create([
                 'table_number' => $billSummary->table_number,
                 'total' => $billSummary->total,
             ]);
-    
-            // ย้ายข้อมูลสินค้าจาก BillSummary ไป BillHistory
+
             foreach ($billSummary->items as $item) {
                 BillItem::create([
                     'bill_id' => $billHistory->id,
@@ -84,22 +81,15 @@ class BillController extends Controller
                     'price' => $item->price,
                 ]);
             }
-    
-            // 🔥 อัปเดตสถานะ Bill เป็น 'paid'
-            if ($bill) {
-                $bill->status = 'paid';
-                $bill->save();
-            }
-    
-            // 🔥 ลบ BillSummary ออกจากฐานข้อมูล
+
+            // Delete the bill and its items from the BillSummary table
             $billSummary->items()->delete();
             $billSummary->delete();
-    
-            return response()->json(['message' => 'Payment completed successfully'], 200);
+
+            return response()->json($billHistory->load('items.product'), 200);
         } catch (\Exception $e) {
             Log::error('Failed to process payment: ' . $e->getMessage());
             return response()->json(['error' => 'Failed to process payment'], 500);
         }
     }
-    
 }
