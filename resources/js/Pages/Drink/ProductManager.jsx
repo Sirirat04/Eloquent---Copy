@@ -322,20 +322,8 @@ const ProductManager = () => {
 
                                     <div className="mb-2">
                                         <label className="block">
-                                            เลือกรูปภาพ (ไฟล์ หรือ URL)
+                                            เลือกรูปภาพ (URL)
                                         </label>
-                                        <input
-                                            type="file"
-                                            accept="image/*"
-                                            onChange={(e) =>
-                                                setNewProduct({
-                                                    ...newProduct,
-                                                    image: e.target.files[0],
-                                                    image_url: "",
-                                                })
-                                            }
-                                            className="w-full p-2 border rounded mb-2"
-                                        />
                                         <input
                                             type="text"
                                             placeholder="ใส่ URL รูปภาพ"
@@ -476,14 +464,17 @@ const ProductManager = () => {
 
                                 {/* อัปโหลดรูปใหม่ (ไม่จำเป็นต้องอัปโหลดก็ได้) */}
                                 <input
-                                    type="file"
-                                    className="border p-2 rounded w-full mb-2"
+                                    type="text"
+                                    placeholder="ใส่ URL รูปภาพ"
+                                    value={newProduct.image_url}
                                     onChange={(e) =>
-                                        setEditingProduct({
-                                            ...editingProduct,
-                                            image: e.target.files[0],
+                                        setNewProduct({
+                                            ...newProduct,
+                                            image_url: e.target.value, // ✅ อัปเดต URL
+                                            image: null, // ✅ เคลียร์ค่า image ถ้ามี URL
                                         })
                                     }
+                                    className="border rounded"
                                 />
 
                                 <div className="flex justify-end gap-2">
