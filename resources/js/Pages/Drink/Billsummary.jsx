@@ -34,7 +34,7 @@ const BillSummary = () => {
     };
 
     const handleHistoryClick = () => {
-        Inertia.get(route('billhistory'));
+        Inertia.get('/billhistory'); // ✅ Use the correct route path
         setIsMenuOpen(false);
     };
 

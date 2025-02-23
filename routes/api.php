@@ -14,6 +14,14 @@ Route::get('/user', function (Request $request) {
     return $request->user();
 })->middleware('auth:sanctum');
 
+
+Route::post('/products/{id}', [ProductController::class, 'update'])->name('products.update');
+Route::delete('/products/{id}', [ProductController::class, 'destroy'])->name('products.destroy');
+
+
+Route::post('/products', [ProductController::class, 'store'])->name('products.store');
+Route::get('/products', [ProductController::class, 'index']);
+
 Route::apiResource('products', ProductController::class);
 Route::apiResource('categories', CategoryController::class);
 Route::apiResource('orders', OrderController::class);
@@ -29,4 +37,3 @@ Route::get('/bills/summary', [BillSummaryController::class, 'summary']);
 Route::patch('/bills/{bill}/complete', [BillController::class, 'complete']);
 Route::patch('/bills/{bill}/update-items', [BillController::class, 'updateItems']); // ✅ เพิ่ม Route นี้
 Route::delete('/bills/{bill}', [BillController::class, 'destroy']);
-
