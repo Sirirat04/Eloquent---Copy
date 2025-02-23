@@ -27,3 +27,6 @@ Route::post('logout', [AuthController::class, 'logout'])->middleware('auth:sanct
 Route::get('/bills/summary', [BillSummaryController::class, 'summary']);
 
 Route::patch('/bills/{bill}/complete', [BillController::class, 'complete']);
+Route::patch('/bills/{bill}/update-items', [BillController::class, 'updateItems']); // ✅ เพิ่ม Route นี้
+Route::delete('/bills/{bill}', [BillController::class, 'destroy']);
+

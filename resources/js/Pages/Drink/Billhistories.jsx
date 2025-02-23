@@ -20,13 +20,9 @@ const BillHistories = () => {
             });
     }, []);
 
-    // ตรวจสอบให้แน่ใจว่า return อยู่ในฟังก์ชัน
-    if (loading) {
-        return <h2 style={{ textAlign: 'center' }}>กำลังโหลดข้อมูลประวัติการสั่งซื้อ...</h2>;
-    }
-    if (error) {
-        return <h2 style={{ textAlign: 'center', color: 'red' }}>{error}</h2>;
-    }
+    // ✅ แสดงข้อความโหลดข้อมูล
+    if (loading) return <h2 style={{ textAlign: 'center' }}>กำลังโหลดข้อมูลประวัติการสั่งซื้อ...</h2>;
+    if (error) return <h2 style={{ textAlign: 'center', color: 'red' }}>{error}</h2>;
 
     const containerStyle = {
         padding: '20px',
@@ -51,16 +47,25 @@ const BillHistories = () => {
                 <ul style={billListStyle}>
                     {billHistories.map((bill) => (
                         <li key={`${bill.table_number}-${bill.id}`} style={billItemStyle}>
+                            <strong>บิล #{bill.id}</strong> {/* ✅ เพิ่มเลขบิล */}
+                            <br />
                             <strong>โต๊ะ: {bill.table_number}</strong>
                             <br />
+
+                            {/* ✅ ตรวจสอบว่าบิลมีรายการอาหารหรือไม่ */}
+                            {bill.items && bill.items.length > 0 ? (
+                                <ul>
+                                    {bill.items.map((item, index) => (
+                                        <li key={`${item.product.id}-${index}`}>
+                                            {item.product.name} - จำนวน: {item.quantity} - ราคา: ${item.price}
+                                        </li>
+                                    ))}
+                                </ul>
+                            ) : (
+                                <p style={{ color: 'red' }}>ไม่มีออเดอร์ในบิลนี้</p> // ✅ แสดงถ้าไม่มีออเดอร์
+                            )}
+
                             <span>รวม: ${bill.total}</span>
-                            <ul>
-                                {bill.items.map((item, index) => (
-                                    <li key={`${item.product.id}-${index}`}>
-                                        {item.product.name} - จำนวน: {item.quantity} - ราคา: ${item.price}
-                                    </li>
-                                ))}
-                            </ul>
                         </li>
                     ))}
                 </ul>

@@ -177,13 +177,15 @@ const BillSummary = () => {
                 <ul style={billListStyle}>
                     {billSummary.map((bill) => (
                         <li
-                            key={bill.table_number}
+                            key={bill.id} // ✅ เปลี่ยนจาก table_number เป็น id
+                            table={bill.table_number}
                             style={billItemStyle}
                             onClick={() => handleBillClick(bill)}
                         >
+                            <strong>บิล #{bill.id}</strong> {/* ✅ เพิ่ม bill.id */}
+                            <br />
                             <strong>โต๊ะ: {bill.table_number}</strong>
                             <br />
-                            <span>รวม: ${bill.total}</span>
                             <ul>
                                 {bill.items.map((item, index) => (
                                     <li key={`${item.product.id}-${index}`}>
@@ -191,6 +193,7 @@ const BillSummary = () => {
                                     </li>
                                 ))}
                             </ul>
+                            <span>รวม: ${bill.total}</span>
                         </li>
                     ))}
                 </ul>

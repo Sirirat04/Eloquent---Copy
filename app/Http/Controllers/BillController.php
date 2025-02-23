@@ -92,4 +92,50 @@ class BillController extends Controller
             return response()->json(['error' => 'Failed to process payment'], 500);
         }
     }
+    public function updateItems(Request $request, $id)
+    {
+        try {
+            $bill = Bill::findOrFail($id);
+
+            if (!$request->has('items')) {
+                return response()->json(['error' => 'No items provided'], 400);
+            }
+
+            $remainingItems = collect($request->items);
+
+            foreach ($remainingItems as $item) {
+                BillItem::where('id', $item['id'])->update(['quantity' => $item['quantity']]);
+            }
+
+            // ลบออเดอร์ที่ไม่มีอยู่ใน `items`
+            BillItem::where('bill_id', $bill->id)
+                ->whereNotIn('id', $remainingItems->pluck('id'))
+                ->delete();
+
+            // คำนวณราคารวมใหม่
+            $newTotal = $remainingItems->sum(function ($item) {
+                return $item['quantity'] * $item['price'];
+            });
+
+            // อัปเดตราคาบิล
+            $bill->update(['total' => $newTotal]);
+
+            return response()->json(['message' => 'Bill updated successfully', 'new_total' => $newTotal], 200);
+        } catch (\Exception $e) {
+            Log::error('Failed to update bill items: ' . $e->getMessage());
+            return response()->json(['error' => 'Failed to update bill items'], 500);
+        }
+    }
+    public function destroy($id)
+    {
+        try {
+            $bill = Bill::findOrFail($id);
+            $bill->items()->delete(); // ✅ ลบรายการอาหารในบิล
+            $bill->delete(); // ✅ ลบบิล
+
+            return response()->json(['message' => 'ลบบิลเรียบร้อยแล้ว'], 200);
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'เกิดข้อผิดพลาดในการลบบิล'], 500);
+        }
+    }
 }
