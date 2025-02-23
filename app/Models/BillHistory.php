@@ -9,15 +9,17 @@ class BillHistory extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['bill_id', 'table_number', 'total']; // ✅ เพิ่ม bill_id
+    protected $fillable = ['bill_id', 'table_number', 'total'];
 
+    // ความสัมพันธ์กับ Bill
     public function bill()
     {
-        return $this->belongsTo(Bill::class, 'bill_id'); // ✅ เชื่อมกับ Bill
+        return $this->belongsTo(Bill::class, 'bill_id');
     }
 
+    // ความสัมพันธ์กับ BillItem และ Product
     public function items()
     {
-        return $this->hasMany(BillItem::class, 'bill_id', 'bill_id')->with('product');
+        return $this->morphMany(BillItem::class, 'billable');
     }
 }
