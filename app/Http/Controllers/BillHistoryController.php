@@ -22,5 +22,10 @@ class BillHistoryController extends Controller
 
         return response()->json($billHistories);
     }
-    
+    public function getHistory()
+{
+    $history = BillHistory::all();  // ดึงข้อมูลประวัติการชำระเงิน
+    return response()->json($history);
+}
+
 }
