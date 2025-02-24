@@ -148,9 +148,9 @@ const ProductList = () => {
                 <div className="flex flex-col lg:flex-row">
                     {/* Sidebar */}
                     <div className={`
-                        ${isSidebarOpen ? 'block' : 'hidden'} 
+                        ${isSidebarOpen ? 'block' : 'hidden'}
                         lg:block
-                        w-full lg:w-64 
+                        w-full lg:w-64
                         bg-white shadow-lg
                         fixed lg:relative
                         z-50 lg:z-auto
@@ -167,8 +167,8 @@ const ProductList = () => {
                                             className={`
                                                 w-full text-left px-4 py-2 rounded-lg
                                                 transition-colors duration-200
-                                                ${selectedCategory === category.id 
-                                                    ? 'bg-stone-200 text-stone-800' 
+                                                ${selectedCategory === category.id
+                                                    ? 'bg-stone-200 text-stone-800'
                                                     : 'text-stone-600 hover:bg-stone-100'}
                                             `}
                                         >
@@ -184,8 +184,8 @@ const ProductList = () => {
                                                         className={`
                                                             w-full text-left px-4 py-2 rounded-lg
                                                             transition-colors duration-200
-                                                            ${selectedCategory === sub.id 
-                                                                ? 'bg-stone-200 text-stone-800' 
+                                                            ${selectedCategory === sub.id
+                                                                ? 'bg-stone-200 text-stone-800'
                                                                 : 'text-stone-600 hover:bg-stone-100'}
                                                         `}
                                                     >
@@ -237,7 +237,7 @@ const ProductList = () => {
                             <button
                                 onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
                                 disabled={currentPage === 1}
-                                className="px-4 py-2 bg-stone-200 rounded-lg disabled:opacity-50 
+                                className="px-4 py-2 bg-stone-200 rounded-lg disabled:opacity-50
                                     hover:bg-stone-300 transition-colors duration-200"
                             >
                                 ก่อนหน้า
@@ -248,7 +248,7 @@ const ProductList = () => {
                             <button
                                 onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
                                 disabled={currentPage === totalPages}
-                                className="px-4 py-2 bg-stone-200 rounded-lg disabled:opacity-50 
+                                className="px-4 py-2 bg-stone-200 rounded-lg disabled:opacity-50
                                     hover:bg-stone-300 transition-colors duration-200"
                             >
                                 ถัดไป
@@ -264,10 +264,10 @@ const ProductList = () => {
                             placeholder="กรอกหมายเลขโต๊ะ"
                             value={tableNumber}
                             onChange={(e) => setTableNumber(e.target.value)}
-                            className="w-full p-3 border border-stone-300 rounded-lg mb-4 
+                            className="w-full p-3 border border-stone-300 rounded-lg mb-4
                                 focus:outline-none focus:ring-2 focus:ring-stone-500"
                         />
-                        
+
                         {billItems.length === 0 ? (
                             <p className="text-center text-stone-500 my-8">ยังไม่มีสินค้าในบิล</p>
                         ) : (
@@ -281,7 +281,7 @@ const ProductList = () => {
                                         <div className="flex items-center gap-2">
                                             <button
                                                 onClick={() => updateQuantity(item.id, item.quantity - 1)}
-                                                className="w-8 h-8 flex items-center justify-center bg-stone-200 
+                                                className="w-8 h-8 flex items-center justify-center bg-stone-200
                                                     rounded-lg hover:bg-stone-300 transition-colors duration-200"
                                             >
                                                 -
@@ -289,7 +289,7 @@ const ProductList = () => {
                                             <span className="w-8 text-center">{item.quantity}</span>
                                             <button
                                                 onClick={() => updateQuantity(item.id, item.quantity + 1)}
-                                                className="w-8 h-8 flex items-center justify-center bg-stone-200 
+                                                className="w-8 h-8 flex items-center justify-center bg-stone-200
                                                     rounded-lg hover:bg-stone-300 transition-colors duration-200"
                                             >
                                                 +

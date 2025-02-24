@@ -28,7 +28,8 @@ const BillSummary = () => {
     }, []);
 
     const handleHistoryClick = () => {
-        Inertia.get('/billhistory');
+        window.location.href = '/billhistory';
+
         setIsMenuOpen(false);
     };
 
@@ -75,7 +76,7 @@ const BillSummary = () => {
         <AuthenticatedLayout>
             <div className="relative min-h-screen bg-gray-50">
                 {/* Settings Button */}
-                <button 
+                <button
                     onClick={() => setIsMenuOpen(!isMenuOpen)}
                     className="fixed top-4 right-4 text-2xl p-2 hover:bg-gray-100 rounded-full transition-colors z-50"
                 >
@@ -85,7 +86,7 @@ const BillSummary = () => {
                 {/* Dropdown Menu */}
                 {isMenuOpen && (
                     <div className="fixed top-16 right-4 bg-white rounded-lg shadow-lg border border-gray-200 overflow-hidden z-50">
-                        <button 
+                        <button
                             onClick={handleHistoryClick}
                             className="w-full px-4 py-2 text-left hover:bg-gray-50 transition-colors"
                         >
@@ -97,10 +98,10 @@ const BillSummary = () => {
                 {/* Main Content */}
                 <div className="container mx-auto p-4 max-w-4xl">
                     <h1 className="text-2xl font-semibold mb-6 text-amber-900">สรุปบิล</h1>
-                    
+
                     <div className="space-y-4">
                         {billSummary.map((bill) => (
-                            <div 
+                            <div
                                 key={bill.id}
                                 onClick={() => setSelectedBill(bill)}
                                 className="bg-white rounded-lg border border-gray-200 p-6 hover:shadow-md transition-shadow cursor-pointer"
@@ -121,7 +122,7 @@ const BillSummary = () => {
 
                                 <ul className="space-y-2">
                                     {bill.items.map((item, index) => (
-                                        <li 
+                                        <li
                                             key={`${item.product.id}-${index}`}
                                             className="flex justify-between items-center py-2 border-b border-gray-100 last:border-0"
                                         >
@@ -147,12 +148,12 @@ const BillSummary = () => {
                 {/* Modal */}
                 {selectedBill && (
                     <>
-                        <div 
+                        <div
                             className="fixed inset-0 bg-black bg-opacity-50 z-40"
                             onClick={() => setSelectedBill(null)}
                         />
                         <div className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white rounded-lg shadow-xl p-6 w-full max-w-md z-50">
-                            <button 
+                            <button
                                 onClick={() => setSelectedBill(null)}
                                 className="absolute top-4 right-4 text-gray-400 hover:text-gray-600"
                             >
@@ -165,7 +166,7 @@ const BillSummary = () => {
 
                             <div className="mt-4 space-y-3">
                                 {selectedBill.items.map((item, index) => (
-                                    <div 
+                                    <div
                                         key={`${item.product.id}-${index}`}
                                         className="flex justify-between items-center py-2 border-b border-gray-100 last:border-0"
                                     >
